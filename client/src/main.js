@@ -23,6 +23,7 @@ const state = {
   headings: [],
 
   // Phase 3
+  youtubeUrl: '',
   youtubeTranscript: '',
   proTip: null,
   blogPosts: [],
@@ -330,15 +331,20 @@ function renderPhase3() {
       <div class="card-header">
         <div>
           <div class="card-title">3.1 — YouTube "Human Insight" Module</div>
-          <div class="card-subtitle">Paste a YouTube transcript to extract a Pro-Tip</div>
+          <div class="card-subtitle">Paste a YouTube URL or transcript to extract a Pro-Tip</div>
         </div>
       </div>
       <div class="form-group">
-        <label class="form-label">YouTube Transcript</label>
-        <div class="form-hint">Paste the transcript text from a relevant YouTube video (you can get this from YouTube → "..." → "Show transcript")</div>
-        <textarea class="form-textarea" id="inp-transcript" placeholder="Paste YouTube transcript here…" style="min-height:120px;">${esc(state.youtubeTranscript)}</textarea>
+        <label class="form-label">YouTube Video URL</label>
+        <div class="form-hint">Paste a link to a relevant tutorial or guide</div>
+        <input class="form-input" id="inp-youtube-url" type="text" placeholder="https://www.youtube.com/watch?v=..." value="${esc(state.youtubeUrl)}" />
       </div>
-      <button class="btn btn-primary" id="btn-protip" ${!state.youtubeTranscript && !state.keyword ? 'disabled' : ''}>
+      <div class="form-group">
+        <label class="form-label">OR: Paste Transcript Manually</label>
+        <div class="form-hint">Use this if the auto-extractor fails</div>
+        <textarea class="form-textarea" id="inp-transcript" placeholder="Paste YouTube transcript here…" style="min-height:80px;">${esc(state.youtubeTranscript)}</textarea>
+      </div>
+      <button class="btn btn-primary" id="btn-protip" ${!state.youtubeUrl && !state.youtubeTranscript && !state.keyword ? 'disabled' : ''}>
         🎬 Extract Pro-Tip
       </button>
       ${state.proTip ? `
@@ -692,13 +698,18 @@ function attachEvents() {
   });
 
   // ── Phase 3 Events ──
+  bindInput('inp-youtube-url', v => state.youtubeUrl = v);
   bindInput('inp-transcript', v => state.youtubeTranscript = v);
 
   bindClick('btn-protip', async (btn) => {
     saveCurrentPhaseInputs();
     setLoading(btn, true);
     try {
-      const data = await api('/youtube/extract', { transcript: state.youtubeTranscript, keyword: state.keyword });
+      const data = await api('/youtube/extract', { 
+        url: state.youtubeUrl,
+        transcript: state.youtubeTranscript, 
+        keyword: state.keyword 
+      });
       state.proTip = data;
       render();
     } catch (e) {
@@ -925,6 +936,14 @@ function buildExportHTML() {
   const title = state.headings.find(h => h.level === 'H2')?.text || state.keyword || 'Lawsons Article';
 
   let html = `<!-- Lawsons Content Engine — Generated ${new Date().toISOString().split('T')[0]} -->\n\n`;
+
+  // QA Metadata
+  const flagged = Object.values(state.claimApprovals).some(v => v === false);
+  const totalClaims = state.headings.filter(h => h.claim).length;
+  const approvedCount = Object.values(state.claimApprovals).filter(v => v === true).length;
+  
+  html += `<!-- QA STATUS: ${flagged ? '⚠️ FLAG FOR REVIEW' : '✅ APPROVED'} -->\n`;
+  html += `<!-- CLAIMS: ${approvedCount}/${totalClaims} APPROVED -->\n\n`;
 
   // Answer Block
   if (state.answerBlock) {
