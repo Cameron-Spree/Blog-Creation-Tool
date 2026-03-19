@@ -1,0 +1,19 @@
+{
+  "name": "lawsons-content-engine",
+  "version": "1.0.0",
+  "description": "Transform BrightEdge drafts into premium Lawsons SEO content",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "build": "echo 'No build step required for vanilla JS'"
+  },
+  "dependencies": {
+    "express": "^4.21.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.0",
+    "multer": "^1.4.5-lts.1",
+    "youtube-transcript": "^1.2.1"
+  }
+}

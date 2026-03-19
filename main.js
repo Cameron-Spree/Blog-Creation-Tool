@@ -146,7 +146,10 @@ function renderHeader() {
   const phase = PHASES[state.currentPhase];
   return `
     <header class="main-header">
-      <h1>${phase.icon} Phase ${phase.num}: <span>${phase.title}</span></h1>
+      <div style="display:flex;align-items:center;gap:var(--space-4);">
+        <img src="./assets/hero.png" alt="Lawsons Logo" style="height:40px;border-radius:var(--radius-sm);box-shadow:var(--shadow-sm);" />
+        <h1>${phase.icon} Phase ${phase.num}: <span>${phase.title}</span></h1>
+      </div>
       <div class="header-actions">
         ${state.keyword ? `<span class="chip" style="border-color: var(--lawsons-green);">🔑 ${state.keyword}</span>` : ''}
         <button class="btn btn-ghost" onclick="window.__previewAll()">👁️ Preview</button>
