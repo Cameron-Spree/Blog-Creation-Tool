@@ -2,7 +2,6 @@
    LAWSONS AGENTIC CONTENT ENGINE
    Main Application Entry Point
    ═══════════════════════════════════════════════════════════ */
-import './style.css';
 
 const API = '/api';
 
