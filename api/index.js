@@ -3,8 +3,8 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import contentRoutes from './content.js';
-import youtubeRoutes from './youtube.js';
+import contentRoutes from '../routes/content.js';
+import youtubeRoutes from '../routes/youtube.js';
 
 dotenv.config();
 
