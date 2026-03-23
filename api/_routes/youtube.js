@@ -1,6 +1,5 @@
 import { Router } from 'express';
-const ytMod = await import('youtube-transcript');
-const YoutubeTranscript = ytMod.YoutubeTranscript || ytMod.default?.YoutubeTranscript || ytMod.default;
+import { getYoutubeTranscript } from '../_services/youtubeExt.js';
 import { extractProTip } from '../_services/gemini.js';
 
 const router = Router();
@@ -8,22 +7,21 @@ const router = Router();
 // ── Phase 3.1: YouTube Pro-Tip Extraction ───────────
 router.post('/extract', async (req, res) => {
   try {
-    let { transcript, url, keyword } = req.body;
+    const { url, transcript, keyword } = req.body;
     
-    if (!transcript && url) {
-      // Try to fetch transcript from URL
+    let text = transcript;
+    if (!text && url) {
       try {
-        const data = await YoutubeTranscript.fetchTranscript(url);
-        transcript = data.map(t => t.text).join(' ');
+        text = await getYoutubeTranscript(url);
       } catch (err) {
         return res.status(400).json({ error: `Could not fetch transcript from URL: ${err.message}` });
       }
     }
 
-    if (!transcript) return res.status(400).json({ error: 'transcript text or youtube url is required' });
+    if (!text) return res.status(400).json({ error: 'transcript text or youtube url is required' });
     if (!keyword) return res.status(400).json({ error: 'keyword is required' });
 
-    const proTip = await extractProTip(transcript, keyword);
+    const proTip = await extractProTip(text, keyword);
     res.json(proTip);
   } catch (err) {
     res.status(500).json({ error: err.message });
