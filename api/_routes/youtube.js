@@ -1,7 +1,6 @@
 import { Router } from 'express';
-import { createRequire } from 'module';
-const require = createRequire(import.meta.url);
-const { YoutubeTranscript } = require('youtube-transcript');
+const ytMod = await import('youtube-transcript');
+const YoutubeTranscript = ytMod.YoutubeTranscript || ytMod.default?.YoutubeTranscript || ytMod.default;
 import { extractProTip } from '../_services/gemini.js';
 
 const router = Router();
