@@ -75,18 +75,24 @@ async function checkApi() {
       const errorText = await res.text();
       state.apiConnected = false;
       state.hasApiKey = false;
-      state.apiError = `HTTP ${res.status}: ${errorText.substring(0, 200)}`;
+      state.apiError = `HTTP ${res.status}: ${errorText.substring(0, 300)}`;
       return null;
     }
     const data = await res.json();
+    if (data.status === 'fatal') {
+      state.apiConnected = false;
+      state.hasApiKey = false;
+      state.apiError = `FATAL: ${data.initError || 'Unknown fatal error'} (Node ${data.nodeVersion})`;
+      return null;
+    }
     state.apiConnected = true;
     state.hasApiKey = !!data.hasApiKey;
-    state.apiError = null;
+    state.apiError = data.initError ? `DEGRADED: ${data.initError}` : null;
     return data;
   } catch (err) {
     state.apiConnected = false;
     state.hasApiKey = false;
-    state.apiError = `Network/CORS Error: ${err.message}`;
+    state.apiError = `Network/CORS: ${err.message}`;
     return null;
   }
 }
