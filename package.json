@@ -2,11 +2,11 @@
   "name": "lawsons-content-engine",
   "version": "1.0.0",
   "description": "Transform BrightEdge drafts into premium Lawsons SEO content",
-  "main": "server.js",
+  "main": "local-server.js",
   "type": "module",
   "scripts": {
-    "start": "node api/index.js",
-    "dev": "node api/index.js",
+    "start": "node local-server.js",
+    "dev": "node local-server.js",
     "build": "echo 'No build step required for vanilla JS'"
   },
   "dependencies": {

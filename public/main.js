@@ -71,13 +71,22 @@ async function apiUpload(path, formData) {
 async function checkApi() {
   try {
     const res = await fetch(`${API}/health`);
+    if (!res.ok) {
+      const errorText = await res.text();
+      state.apiConnected = false;
+      state.hasApiKey = false;
+      state.apiError = `HTTP ${res.status}: ${errorText.substring(0, 200)}`;
+      return null;
+    }
     const data = await res.json();
     state.apiConnected = true;
     state.hasApiKey = !!data.hasApiKey;
+    state.apiError = null;
     return data;
-  } catch {
+  } catch (err) {
     state.apiConnected = false;
     state.hasApiKey = false;
+    state.apiError = `Network/CORS Error: ${err.message}`;
     return null;
   }
 }
@@ -142,6 +151,7 @@ function renderSidebar() {
               (state.hasApiKey ? 'AI Active (Gemini Pro)' : 'Mock Mode (No API Key)')}
           </span>
         </div>
+        ${state.apiError ? `<div style="color:var(--text-error);font-size:11px;margin-top:6px;padding-top:6px;border-top:1px solid var(--border-subtle);word-break:break-word;line-height:1.4;"><strong>Debug:</strong> ${state.apiError.replace(/</g, '&lt;')}</div>` : ''}
       </div>
     </aside>
   `;
