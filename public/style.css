@@ -272,6 +272,11 @@ body {
   box-shadow: 0 0 6px rgba(52,211,153,0.5);
 }
 
+.api-dot.warning {
+  background: var(--text-warning);
+  box-shadow: 0 0 6px rgba(245,158,11,0.5);
+}
+
 /* ── Main Content ── */
 .main-content {
   flex: 1;

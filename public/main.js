@@ -9,6 +9,7 @@ const API = '/api';
 const state = {
   currentPhase: 0,
   apiConnected: false,
+  hasApiKey: false,
 
   // Phase 1
   keyword: '',
@@ -72,9 +73,11 @@ async function checkApi() {
     const res = await fetch(`${API}/health`);
     const data = await res.json();
     state.apiConnected = true;
+    state.hasApiKey = !!data.hasApiKey;
     return data;
   } catch {
     state.apiConnected = false;
+    state.hasApiKey = false;
     return null;
   }
 }
@@ -133,8 +136,11 @@ function renderSidebar() {
       </nav>
       <div class="sidebar-footer">
         <div class="api-status">
-          <div class="api-dot ${state.apiConnected ? 'connected' : ''}"></div>
-          <span>${state.apiConnected ? 'API Connected' : 'API Offline — start server'}</span>
+          <div class="api-dot ${state.apiConnected ? (state.hasApiKey ? 'connected' : 'warning') : ''}"></div>
+          <span>
+            ${!state.apiConnected ? 'API Offline — start server' : 
+              (state.hasApiKey ? 'AI Active (Gemini Pro)' : 'Mock Mode (No API Key)')}
+          </span>
         </div>
       </div>
     </aside>
