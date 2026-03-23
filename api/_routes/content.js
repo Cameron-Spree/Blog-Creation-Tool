@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import multer from 'multer';
-import { generatePAA, generateAnswerBlock, generateTakeaways, rankInternalLinks, checkTone, generateAltText } from '../services/gemini.js';
-import { generateArticleSchema } from '../services/schema.js';
+import { generatePAA, generateAnswerBlock, generateTakeaways, rankInternalLinks, checkTone, generateAltText } from '../_services/gemini.js';
+import { generateArticleSchema } from '../_services/schema.js';
 
 const router = Router();
 const upload = multer({ storage: multer.memoryStorage() });

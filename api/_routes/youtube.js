@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { YoutubeTranscript } from 'youtube-transcript';
-import { extractProTip } from '../services/gemini.js';
+import { extractProTip } from '../_services/gemini.js';
 
 const router = Router();
 

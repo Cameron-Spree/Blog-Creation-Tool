@@ -1,8 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import contentRoutes from '../routes/content.js';
-import youtubeRoutes from '../routes/youtube.js';
+import contentRoutes from './_routes/content.js';
+import youtubeRoutes from './_routes/youtube.js';
 
 dotenv.config();
 
